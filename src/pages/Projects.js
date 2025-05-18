@@ -1,7 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import sample1 from "../assets/images/city1.png";
-import sample2 from "../assets/images/city2.png";
-import sample3 from "../assets/images/city3.png";
 import movie_finder_home from "../assets/images/movie_finder_home.png";
 import movie_finder_bookmark from "../assets/images/movie_finder_bookmark.png";
 import movie_finder_genre from "../assets/images/movie_finder_genre.png";
