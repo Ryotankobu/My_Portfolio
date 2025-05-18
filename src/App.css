@@ -1,38 +1,958 @@
-.App {
-  text-align: center;
+html {
+  scroll-behavior: smooth !important;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
+.bubbles {
+  position: fixed;
+  /* fixed to the background, won't affect layout */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* important to avoid overflow */
   pointer-events: none;
+  /* allow interaction with underlying content */
+  z-index: -1;
+  /* behind all other content */
+  background-color: #0e9cfa;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.bubble {
+  position: absolute;
+  left: var(--bubble-left-offset);
+  bottom: var(--bubble-bottom-offset);
+  /* ✅ new variable */
+  width: var(--bubble-radius);
+  height: var(--bubble-radius);
+  border-radius: 50%;
+  animation: float-up var(--bubble-float-duration) var(--bubble-float-delay)
+    ease-in infinite;
+}
+
+.bubble::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: hsla(183, 94%, 76%, 0.3);
+  border-radius: inherit;
+  animation: var(--bubble-sway-type) var(--bubble-sway-duration)
+    var(--bubble-sway-delay) ease-in-out alternate infinite;
+}
+
+/* No changes needed here, but recommended: */
+@keyframes float-up {
+  to {
+    transform: translateY(-120vh);
+    /* slightly above viewport */
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+@keyframes sway-left-to-right {
+  from {
+    transform: translateX(-200vh);
+  }
+
+  to {
+    transform: translateX(200vh);
+  }
+}
+
+@keyframes sway-right-to-left {
+  from {
+    transform: translateX(200vh);
+  }
+
+  to {
+    transform: translateX(-200vh);
+  }
+}
+
+/* App.js */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  /* background-color: #0E9CFA; */
+}
+.content-wrapper {
+  margin-top: 80px;
+  width: 95%;
+  height: 80vh;
+  background-color: #0e9cfa;
+  overflow-y: auto;
+  /* padding: 20px; */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* border-radius: 10px; */
+  border-color: #e9f07e;
+  border-style: solid;
+  border-width: 2px;
+}
+.content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.scrollable-content {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+/* Navbar */
+.navbar {
+  /* background-color: #0E9CFA!important; */
+  color: #e9f07e;
+  font-family: "Luckiest Guy", cursive !important;
+  font-weight: 800;
+  font-style: normal;
+  width: 100%;
+}
+.navbar-title {
+  color: #e9f07e;
+  font-size: 40px !important;
+}
+.navbar button {
+  color: #e9f07e;
+  font-size: 25px;
+  font-family: "Luckiest Guy", cursive;
+  font-weight: 400 !important;
+  font-style: normal;
+}
+
+/* Home.js */
+.home-wrapper {
+  border-bottom: 2px solid;
+  border-color: #e9f07e;
+  position: relative;
+}
+.home-contents {
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  right: 0;
+  background-color: rgba(0, 55, 73, 0.4);
+  overflow: hidden;
+  width: 0px;
+  height: 100%;
+  transition: 0.5s ease;
+  display: flex;
+  justify-content: space-around;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.home-wrapper:hover .home-contents {
+  width: 100%;
+  left: 30%;
+}
+.home-text-container {
+  width: 80%;
+  padding: 20px;
+  margin-right: 30%;
+}
+
+.home-text-container h1 {
+  font-size: 80px;
+  color: #e9f07e;
+}
+.home-text-container h2 {
+  font-size: 40px;
+  color: #e9f07e;
+}
+.home-text-container p {
+  color: #e9f07e;
+  margin-top: 30px;
+}
+.home-image-container {
+  max-width: 100%;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.home-image-container img {
+  max-width: 100%;
+  height: auto;
+  margin-top: -120px;
+}
+.home-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  margin-top: 30px;
+  width: 100%;
+}
+.home-button-container button {
+  width: 300px;
+  height: 60px;
+  margin-right: 30px;
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 5px solid transparent;
+  background-color: #e9f07e;
+  color: #0e9cfa;
+  font-size: 40px;
+  font-weight: bold;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: transform 0.2s ease-in-out;
+}
+.home-button-container button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+.resumeLink {
+  text-decoration: none;
+}
+
+/* AboutMe.js */
+.aboutMe-title {
+  text-align: center;
+  display: block;
+  font-size: 3rem;
+  font-weight: bold;
+  color: grey;
+  font-family: "Luckiest Guy", cursive;
+  font-weight: 800;
+  font-style: normal;
+}
+.aboutMe-title span {
+  display: inline-block;
+  color: grey;
+  opacity: 0;
+  transition: color 0.5s ease, opacity 0.5s ease;
+}
+.aboutMe-title.visible span {
+  animation: letterColorChange 0.8s forwards;
+}
+@keyframes letterColorChange {
+  0% {
+    color: grey;
+    opacity: 0.3;
+  }
+  100% {
+    color: #e9f07e;
+    opacity: 1;
+  }
+}
+
+.aboutMe-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  color: #e9f07e;
+  margin-top: 30px;
+  margin-bottom: 70px;
+  border-style: dashed;
+  border-color: #e9f07e;
+  border-radius: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease;
+  position: relative;
+  padding: 30px;
+}
+.aboutMe-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
+  background-color: #e9f07e;
+  color: #0e9cfa;
+  font-weight: 500;
+}
+.aboutMe-photos-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.aboutMe-photos-wrapper img {
+  width: 20%;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: #e9f07e;
+  border-width: 1px;
+}
+.aboutMeText {
+  font-size: 25px;
+}
+
+/* Projects.js */
+.projects-wrapper {
+  background-color: rgb(190, 186, 186);
+  padding-top: 80px;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-bottom: 80px;
+}
+.project-title {
+  text-align: center;
+  display: block;
+  font-size: 3rem;
+  font-weight: bold;
+  color: grey;
+  font-family: "Luckiest Guy", cursive;
+  font-weight: 800;
+  font-style: normal;
+}
+.project-title span {
+  display: inline-block;
+  color: grey;
+  opacity: 0;
+  transition: color 0.5s ease, opacity 0.5s ease;
+}
+.project-title.visible span {
+  animation: letterColorChange 0.8s forwards;
+}
+@keyframes letterColorChange {
+  0% {
+    color: grey;
+    opacity: 0.3;
+  }
+
+  100% {
+    color: #e9f07e;
+    opacity: 1;
+  }
+}
+.project-tile-wrapper {
+  background-color: #e9f07e;
+  height: 450px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+.project-tile-wrapper:hover {
+  transform: scale(1.1);
+}
+.project-tile-text-section {
+  padding: 20px;
+  width: 45%;
+}
+.project-tile-text-section p {
+  font-size: 16px;
+}
+.project-tile-photo-section {
+  padding: 20px;
+  width: 55%;
+  height: 100%;
+  /* display: block; */
+  /* background-color: red; */
+  text-align: center;
+  align-items: center;
+}
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+.skillBox {
+  width: 70px;
+  height: 20px;
+  background-color: #0e9cfa;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.skillBox p {
+  font-size: 12px;
+}
+.imageSlider {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  align-items: center;
+  height: 100%;
+  /* background-color: blue; */
+}
+
+.imageSliderWrapper {
+  /* background-color: purple; */
+  height: 100%;
+  object-fit: contain;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageSlider .slick-dots {
+  bottom: -30px;
+}
+
+.imageSlider img {
+  width: 100%;
+  height: auto;
+  /* display: block; */
+  border-radius: 5px;
+  border: 2px solid rgb(190, 186, 186);
+  object-fit: contain;
+}
+
+/* Skills */
+.skills-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  color: #e9f07e;
+  margin-top: 30px;
+  margin-bottom: 70px;
+  border-style: dashed;
+  border-color: #e9f07e;
+  border-radius: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease;
+  position: relative;
+  padding: 30px;
+}
+
+.skills-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
+  background-color: #e9f07e;
+  color: #0e9cfa;
+  font-weight: 500;
+}
+.skillContainer {
+  /* background-color: red; */
+  width: 40%;
+  height: 350px;
+  padding: 20px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: gray;
+}
+.skillContainer h3 {
+  margin-bottom: 20px;
+}
+
+/* Experience.js */
+.experience-wrapper {
+  background-color: #e9f07e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5%;
+  padding-right: 5%;
+  gap: 20px;
+  height: 100%;
+  width: 100%;
+}
+.experience-container {
+  display: flex;
+  justify-content: cennter;
+}
+.experience-business-container,
+.experience-education-container {
+  width: 100%;
+  height: auto;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #e9f07e;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  padding: 20px;
+  /* padding-top: 100px;
+  padding-bottom: 100px; */
+  height: 100%;
+  position: relative;
+  /* background-color: rgba(241, 4, 4, 0.655); */
+}
+.experience-business-before,
+.experience-education-before {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  width: 100%;
+  height: 400px;
+  position: relative;
+  /* border-style: solid;
+  border-radius: 10px; */
+}
+.experience-title {
+  position: absolute;
+  top: 56%;
+  left: 50%;
+  background-color: rgba(82, 61, 98, 0.5);
+  width: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  border-radius: 50px;
+  color: #e9f07e;
+}
+.experience-photos {
+  width: 100% !important;
+  height: auto;
+  object-fit: cover !important;
+}
+.experience-business-after,
+.experience-education-after {
+  position: absolute;
+  bottom: 100%;
+  left: 20px;
+  right: 20px;
+  background-color: #0e9cfa;
+  overflow: hidden;
+  width: 95%;
+  height: 0;
+  transition: 0.5s ease;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.scrollExperienceWrapper {
+  padding: 20px;
+  /* background-color: red; */
+}
+.experienceTitle {
+  /* background-color: blue; */
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 30px;
+  color: #e9f07e;
 }
 
-.App-link {
-  color: #61dafb;
+.experience-description {
+  font-size: 15px;
+  width: 100%;
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.uniInfo {
+  list-style-type: none;
+}
+
+.experience-business-container:hover .experience-business-after {
+  bottom: 0;
+  height: 100%;
+  width: 95%;
+  margin-top: 20px;
+}
+.experience-education-container:hover .experience-education-after {
+  bottom: 0;
+  height: 100%;
+}
+
+.experience-business-container img,
+.experience-education-container img {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  align-self: center;
+  border-radius: 10px;
+  opacity: 0.5;
+}
+
+.experience-header {
+  text-align: center;
+  display: block;
+  font-size: 3rem;
+  font-weight: bold;
+  color: grey;
+  font-family: "Luckiest Guy", cursive;
+  font-weight: 800;
+  font-style: normal;
+  background-color: #0e9cfa;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 100px;
+  border-radius: 10px;
+}
+
+.experience-header span {
+  display: inline-block;
+  color: grey;
+  opacity: 0;
+  transition: color 0.5s ease, opacity 0.5s ease;
+}
+
+.experience-header.visible span {
+  animation: letterColorChange 0.8s forwards;
+}
+
+@keyframes letterColorChange {
+  0% {
+    color: grey;
+    opacity: 0.3;
   }
-  to {
-    transform: rotate(360deg);
+
+  100% {
+    color: #e9f07e;
+    opacity: 1;
+  }
+}
+
+
+/* mobile phone */
+@media screen and (max-width: 479px) {
+  .content-wrapper {
+    margin-top: 100px;
+    width: 100%;
+  }
+  .navbar-collapse {
+    position: relative;
+    background-color: #0e9cfa;
+    z-index: 1;
+  }
+  .navbar-collapse.show {
+    margin-bottom: 200px;
+  }
+
+  /* home */
+  .home-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    position: static !important;
+  }
+  .home-contents {
+    position: static !important;
+    width: 100% !important;
+    bottom: 0;
+    left: 100%;
+    right: 0;
+    overflow: hidden;
+    width: 0px;
+    height: 100%;
+    transition: 0.5s ease;
+    display: flex;
+    justify-content: space-around;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .home-wrapper:hover .home-contents {
+    width: 100% !important;
+    left: 0 !important;
+  }
+
+  .home-text-container {
+    width: 100%;
+    margin-right: 0% !important;
+  }
+  .home-image-container {
+    height: 100%;
+  }
+  .home-image-container img {
+    margin-top: -50px;
+  }
+  .home-text-container h1 {
+    font-size: 50px;
+  }
+  .home-text-container h2 {
+    font-size: 25px;
+  }
+  .home-text-container p {
+    font-size: 18px;
+  }
+  .home-button-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    width: 100%;
+    /* background-color: purple; */
+  }
+  .home-button-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* aboutMe */
+  #aboutMe {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .aboutMe-photos-wrapper {
+    display: none;
+  }
+
+  /* project */
+  .projects-wrapper {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  .project-tile-wrapper {
+    height: 900px;
+    flex-direction: column;
+    margin-bottom: 60px;
+  }
+  .project-tile-text-section {
+    padding: 20px;
+    width: 100%;
+  }
+  .project-tile-photo-section {
+    width: 100%;
+  }
+  .imageSlider {
+    width: 100%;
+  }
+
+  /* skills */
+  #skills {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .skills-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-bottom: 0px;
+  }
+  .skillContainer {
+    width: 90%;
+    height: 300px;
+    margin-bottom: 30px;
+  }
+
+  /* experience */
+  .experience-wrapper {
+    padding-left: 0%;
+    padding-right: 0%;
+  }
+  .experience-header {
+    margin-top: 40px;
+  }
+  .experience-container {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0;
+  }
+  .experience-business-container,
+  .experience-education-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+  }
+}
+
+/* middle screen  */
+@media screen and (min-width: 600px) and (max-width: 991px) {
+  .content-wrapper {
+    margin-top: 100px;
+    width: 100%;
+  }
+
+  .navbar-collapse {
+    position: relative;
+    background-color: #0e9cfa;
+    z-index: 1;
+  }
+
+  .navbar-collapse.show {
+    margin-bottom: 200px;
+  }
+
+  /* home */
+  .home-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    position: static !important;
+  }
+
+  .home-contents {
+    position: static !important;
+    width: 100% !important;
+    bottom: 0;
+    left: 100%;
+    right: 0;
+    overflow: hidden;
+    width: 0px;
+    height: 100%;
+    transition: 0.5s ease;
+    display: flex;
+    justify-content: space-around;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  .home-wrapper:hover .home-contents {
+    width: 100% !important;
+    left: 0 !important;
+  }
+
+  .home-text-container {
+    width: 100%;
+    margin-right: 0% !important;
+  }
+
+  .home-image-container {
+    height: 100%;
+  }
+
+  .home-image-container img {
+    margin-top: -50px;
+  }
+
+  .home-text-container h1 {
+    font-size: 50px;
+  }
+
+  .home-text-container h2 {
+    font-size: 25px;
+  }
+
+  .home-text-container p {
+    font-size: 18px;
+  }
+
+  .home-button-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    width: 100%;
+    /* background-color: purple; */
+  }
+
+  .home-button-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* aboutMe */
+  #aboutMe {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .aboutMe-photos-wrapper {
+    display: none;
+  }
+
+  /* project */
+  .projects-wrapper {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+  .project-tile-wrapper {
+    height: 900px;
+    flex-direction: column;
+    margin-bottom: 60px;
+  }
+
+  .project-tile-text-section {
+    padding: 20px;
+    width: 100%;
+  }
+
+  .project-tile-photo-section {
+    width: 100%;
+  }
+
+  .imageSlider {
+    width: 100%;
+  }
+
+  /* skills */
+  #skills {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .skills-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-bottom: 0px;
+  }
+
+  .skillContainer {
+    width: 90%;
+    height: 300px;
+    margin-bottom: 30px;
+  }
+
+  /* experience */
+  .experience-wrapper {
+    padding-left: 0%;
+    padding-right: 0%;
+  }
+
+  .experience-header {
+    margin-top: 40px;
+  }
+
+  .experience-container {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0;
+  }
+
+  .experience-business-container,
+  .experience-education-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    padding-top: 100px;
+      padding-bottom: 100px;
   }
 }
